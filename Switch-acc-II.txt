@@ -1,0 +1,225 @@
+Current configuration : 4983 bytes
+!
+! Last configuration change at 14:51:29 UTC Wed May 1 2024
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+service compress-config
+!
+hostname Switch-acc-II
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$aDh6$6SxyA6h8KRuxoOzoYJ/vl.
+!
+no aaa new-model
+!
+!
+!
+!
+!
+!
+!
+!
+ip name-server 172.16.50.1
+ip cef
+no ipv6 cef
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0
+ no switchport
+ ip address 10.1.1.13 255.255.255.252
+ negotiation auto
+!
+interface GigabitEthernet0/1
+ switchport trunk allowed vlan 30,40
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet0/2
+ switchport trunk allowed vlan 30,40
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet0/3
+ switchport access vlan 30
+ switchport mode access
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet1/0
+ switchport access vlan 40
+ switchport mode access
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet1/1
+ switchport access vlan 999
+ switchport mode access
+ shutdown
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet1/2
+ switchport access vlan 999
+ switchport mode access
+ shutdown
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet1/3
+ switchport access vlan 999
+ switchport mode access
+ shutdown
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet2/0
+ switchport access vlan 999
+ switchport mode access
+ shutdown
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet2/1
+ switchport access vlan 999
+ switchport mode access
+ shutdown
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet2/2
+ switchport access vlan 999
+ switchport mode access
+ shutdown
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet2/3
+ switchport access vlan 999
+ switchport mode access
+ shutdown
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet3/0
+ switchport access vlan 999
+ switchport mode access
+ shutdown
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet3/1
+ switchport access vlan 999
+ switchport mode access
+ shutdown
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet3/2
+ switchport access vlan 999
+ switchport mode access
+ shutdown
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet3/3
+ switchport access vlan 999
+ switchport mode access
+ shutdown
+ media-type rj45
+ negotiation auto
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan40
+ ip address 192.168.40.250 255.255.255.0
+ shutdown
+!
+ip default-gateway 10.1.1.14
+ip forward-protocol nd
+!
+ip http server
+ip http secure-server
+!
+ip route 0.0.0.0 0.0.0.0 192.168.40.254
+ip ssh client algorithm encryption aes128-ctr aes192-ctr aes256-ctr
+!
+!
+logging host 172.16.50.1
+!
+!
+!
+control-plane
+!
+banner exec ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+banner incoming ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+banner login ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+!
+line con 0
+ password root2
+ login
+line aux 0
+line vty 0 4
+ password netoproot2
+ login
+line vty 5 15
+ password netoproot2
+ login
+!
+ntp server 172.16.50.1
+!
+end

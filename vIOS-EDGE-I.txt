@@ -1,0 +1,165 @@
+Current configuration : 3093 bytes
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+!
+hostname vIOS-EDGE-I
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+clock timezone UTC+2 2 0
+no ip icmp rate-limit unreachable
+ip cef
+!
+!
+!
+!
+!
+!
+ip domain name companyXYZ.sk
+ip name-server 195.1.1.161
+no ipv6 cef
+!
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+username admin secret 5 $1$NJ5w$fxxXKPofKq4P8L9y3/KjT.
+!
+!
+ip tcp synwait-time 5
+ip ssh version 2
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ description Management
+ ip address 10.1.1.5 255.255.255.255
+!
+interface Ethernet0/0
+ no ip address
+ shutdown
+ duplex auto
+!
+interface GigabitEthernet0/0
+ description Link to ASA-DMZ-I
+ ip address 195.1.1.129 255.255.255.252
+ ip nat outside
+ media-type gbic
+ speed 1000
+ duplex full
+ negotiation auto
+!
+interface GigabitEthernet1/0
+ description Link to ISP1
+ ip address 198.10.10.2 255.255.255.252
+ ip nat outside
+ negotiation auto
+!
+interface GigabitEthernet2/0
+ description Link to ASAv-I
+ ip address 172.16.0.2 255.255.255.252
+ ip nat inside
+ negotiation auto
+!
+interface GigabitEthernet3/0
+ description Link to ISP2
+ ip address 197.10.10.2 255.255.255.252
+ ip nat outside
+ negotiation auto
+!
+router bgp 64500
+ bgp log-neighbor-changes
+ network 195.1.1.0
+ neighbor isp-group peer-group
+ neighbor isp-group ttl-security hops 1
+ neighbor isp-group filter-list 10 out
+ neighbor 197.10.10.1 remote-as 64502
+ neighbor 197.10.10.1 peer-group isp-group
+ neighbor 197.10.10.1 password isp2md5pass
+ neighbor 198.10.10.1 remote-as 64501
+ neighbor 198.10.10.1 peer-group isp-group
+ neighbor 198.10.10.1 password isp1md5pass
+ neighbor 198.10.10.1 route-map setlocalin in
+!
+ip nat pool 1 195.1.1.1 195.1.1.127 netmask 255.255.255.128
+ip nat inside source list 1 pool 1 overload
+ip forward-protocol nd
+!
+ip as-path access-list 10 permit ^$
+!
+no ip http server
+no ip http secure-server
+ip route 10.0.0.0 255.0.0.0 172.16.0.1
+ip route 172.16.0.0 255.255.0.0 172.16.0.1
+ip route 192.168.0.0 255.255.192.0 172.16.0.1
+ip route 195.1.1.0 255.255.255.0 Null0
+ip route 195.1.1.128 255.255.255.128 195.1.1.130
+!
+ip access-list standard ssh-access
+ permit 192.168.40.0 0.0.0.255
+ deny   any
+!
+logging trap notifications
+logging source-interface Loopback0
+logging host 172.16.50.1
+access-list 1 permit 192.168.10.0 0.0.0.255
+access-list 1 permit 192.168.20.0 0.0.0.255
+access-list 1 permit 192.168.30.0 0.0.0.255
+access-list 1 permit 192.168.40.0 0.0.0.255
+access-list 1 permit 10.0.0.0 0.0.0.255
+access-list 1 permit 10.1.1.0 0.0.0.255
+access-list 1 permit 172.16.0.0 0.0.0.255
+access-list 1 permit 172.16.50.0 0.0.0.255
+access-list 1 deny   any
+!
+route-map setlocalin permit 10
+ set local-preference 150
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+ stopbits 1
+line aux 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+ stopbits 1
+line vty 0 4
+ access-class ssh-access in
+ login local
+ transport input ssh
+line vty 5 924
+ access-class ssh-access in
+ login local
+ transport input ssh
+!
+ntp source Loopback0
+ntp server 172.16.50.1
+!
+end
